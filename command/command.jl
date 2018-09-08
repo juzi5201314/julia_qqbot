@@ -14,9 +14,10 @@ function get_commands()::Dict{String, Command}
     commands
 end
 
-function register_command(name::String, cmd::Command, force::Bool = false)
+
+macro register_command(name::String, cmd::Expr, force::Bool = false)
     if !has_command(name) || force
-        commands[name] = cmd
+        commands[name] = eval(cmd)
     end
 end
 
@@ -28,8 +29,10 @@ function has_command(name::String)::Bool
     name in keys(commands)
 end
 
-function call_command(name::String, sender::CommandSender, data::Dict{String, Any}, args...)
+function call_command(name::String, sender::CommandSender, data::NamedTuple, args...)
     get_command(name).exec(sender, data, args...)
 end
+
+include("default/default_command.jl")
 
 end  # modul command

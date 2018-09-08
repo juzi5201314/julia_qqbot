@@ -1,6 +1,6 @@
 using JSON2
 
-function decode_json(data, t = Dict{Any, Any})::t
+function decode_json(data, t = NamedTuple)::t
     JSON2.read(data, t)
 end
 

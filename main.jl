@@ -4,28 +4,23 @@ main:
 - Author: soeur
 - Date: 2018-09-05
 =#
-using StringEncodings
+
+Config = (
+    ws_url = "ws://118.25.189.162:6700",
+    access_token = "xxmsb",
+    api_thread_count = 3,
+    api_channel_size = 60,
+
+)
+#Config优于一切
 
 include("event_listener.jl")
 include("api.jl")
 include("command/command.jl")
 
 function main()
-    register_default_commands()
-    api.connect_to(url=Config.url, token=Config.access_token)
-    event_listener.listen_to(url=Config.url, token=Config.access_token)
-end
-
-Config = (
-    url = "ws://118.25.189.162:6700",
-    access_token = "xxmsb"
-)
-
-function register_default_commands()
-    command.register_command("version", command.Command() do sender::command.CommandSender, data::Dict{String, Any}, args...
-            println(data, args)
-        end
-    )
+    api.connect_to(url=Config.ws_url, token=Config.access_token)
+    event_listener.listen_to(url=Config.ws_url, token=Config.access_token)
 end
 
 main()
