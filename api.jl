@@ -4,13 +4,13 @@ using WebSockets
 
 include("utils.jl")
 
-queue = Channel{NamedTuple}(Main.Config.api_channel_size)
+api_queue = Channel{NamedTuple}(Main.Config.api_channel_size)
 echo = typemin(Int64)
 
 function connect_to(;url::String="ws://127.0.0.0:6700", token::String="")
     @async WebSockets.open(string(url, "/api", "?access_token=", token)) do ws
         handle = function ()
-            for d in queue
+            for d in api_queue
                 println(writeguarded(ws, encode_json(d)))
                 r, ok = readguarded(ws)
                 println(String(r))
@@ -29,7 +29,7 @@ end
 
 function push_message(action::String, data::NamedTuple)::Int64
     global echo += 1
-    put!(queue, (
+    put!(api_queue, (
     action = action,
     params = data,
     echo = echo

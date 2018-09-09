@@ -8,9 +8,10 @@ main:
 Config = (
     ws_url = "ws://118.25.189.162:6700",
     access_token = "xxmsb",
-    api_thread_count = 3,
+    api_thread_count = 2,
     api_channel_size = 60,
-
+    listener_thread_count = 4,
+    listener_channel_size = 120
 )
 #Config优于一切
 
