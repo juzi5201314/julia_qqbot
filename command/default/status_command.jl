@@ -1,0 +1,3 @@
+@register_command "status" Command() do sender::CommandSender, data::NamedTuple, args...
+    sender.reply("0.0.1")
+end

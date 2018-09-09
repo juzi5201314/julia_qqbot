@@ -8,7 +8,7 @@ listener_queue = Channel{String}(Main.Config.listener_channel_size)
 
 function listen_to(;url::String="ws://127.0.0.0:6700", token::String="")
     WebSockets.open(string(url, "/event", "?access_token=", token)) do ws
-        println("event listener connect to ", url)
+        Main.info!("event listener connect to ", url)
         handle = function ()
             for message in listener_queue
                 data = decode_json(message)
@@ -23,17 +23,17 @@ function listen_to(;url::String="ws://127.0.0.0:6700", token::String="")
         end
 
         for i in 1:Main.Config.listener_thread_count
-            println("Listener handle thread ", i, " start.")
+            Main.info!("Listener handle thread ", i, " start.")
             @async handle()
         end
-        println("Listener thread start.")
+        Main.info!("Listener thread start.")
         while true
             message, ok = readguarded(ws)
             #在idea中文必须encode为gb18030，不然乱码
             #String(encode(message, "gb18030"))
             put!(listener_queue,String(message))
         end
-        println("Listener thread closed.")
+        Main.info!("Listener thread closed.")
     end
 end
 
